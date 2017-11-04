@@ -6,7 +6,6 @@ const ROOT_URL = "http://localhost:8000/api/v1"
 
 
 export function signinUser ({email, password}) {
-	console.log(password)
     const sendData = {
         grant_type: "password",
         client_id: 1,
@@ -24,6 +23,17 @@ export function signinUser ({email, password}) {
             .catch(() => {
                 dispatch(authError('Bad login info!'))
             })
+    }
+}
+
+export function signupUser ({ email, password, name, username, password_confirmation }) {
+    return function (dispatch) {
+        axios.post(`${ROOT_URL}/users`, {email, name, username, password, password_confirmation})
+            .then(response => {
+                dispatch({ type: AUTH_USER })
+                browserHistory.push('/features')
+            })
+            .catch(error => dispatch(authError(error.response.data)))
     }
 }
 
