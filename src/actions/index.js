@@ -1,0 +1,42 @@
+import axios from 'axios'
+import { browserHistory } from 'react-router'
+import { AUTH_USER, AUTH_ERROR,  UNAUTH_USER } from './types.js'
+
+const ROOT_URL = "http://localhost:8000/api/v1"
+
+
+export function signinUser ({email, password}) {
+	console.log(password)
+    const sendData = {
+        grant_type: "password",
+        client_id: 1,
+        client_secret: 'Hcm8ofEYEbczMedOOrSF5DxrqQbO79zJDCeqZEeT',
+        username: email,
+        password
+    }
+    return function (dispatch) {
+        axios.post(`${ROOT_URL}/oauth/token`, sendData)
+            .then(response => {
+                dispatch({ type: AUTH_USER })
+                localStorage.setItem('access_token', response.data.access_token)
+                browserHistory.push('/features')
+            })
+            .catch(() => {
+                dispatch(authError('Bad login info!'))
+            })
+    }
+}
+
+export function authError(error) {
+	return {
+		type: AUTH_ERROR,
+		payload: error
+	}
+} 
+
+export function signoutUser() {
+	localStorage.removeItem('access_token')
+	return {
+		type: UNAUTH_USER
+	}
+} 
