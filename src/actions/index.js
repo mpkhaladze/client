@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { browserHistory } from 'react-router'
-import { AUTH_USER, AUTH_ERROR,  UNAUTH_USER } from './types.js'
+import { AUTH_USER, AUTH_ERROR,  UNAUTH_USER, FETCH_USER } from './types.js'
 
 const ROOT_URL = "http://localhost:8000/api/v1"
 
@@ -17,7 +17,7 @@ export function signinUser ({email, password}) {
         axios.post(`${ROOT_URL}/oauth/token`, sendData)
             .then(response => {
                 dispatch({ type: AUTH_USER })
-                localStorage.setItem('access_token', response.data.access_token)
+                localStorage.setItem('token', response.data.access_token)
                 browserHistory.push('/features')
             })
             .catch(() => {
@@ -45,8 +45,22 @@ export function authError(error) {
 } 
 
 export function signoutUser() {
-	localStorage.removeItem('access_token')
+	localStorage.removeItem('token')
 	return {
 		type: UNAUTH_USER
 	}
 } 
+
+export function fetchUser () {
+    return function (dispatch) {
+        axios.get(`${ROOT_URL}/users/me`, {
+            headers: { authorization: 'Bearer ' + localStorage.getItem('token')}
+        })
+        .then(response => {
+            return dispatch({
+                type: FETCH_USER,
+                payload: response.data
+            })
+        })
+    }
+}

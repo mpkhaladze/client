@@ -1,5 +1,5 @@
 
-import { AUTH_USER, UNAUTH_USER, AUTH_ERROR } from '../actions/types'
+import { AUTH_USER, UNAUTH_USER, AUTH_ERROR, FETCH_USER } from '../actions/types'
 
 export default function (state = {}, action) {
 	switch(action.type) {
@@ -9,7 +9,10 @@ export default function (state = {}, action) {
 			return { ...state, authenticated: false }
 		case AUTH_ERROR:
 			return { ...state, error: action.payload }
-
+		case FETCH_USER:
+			return { ...state, user: action.payload }
+		default:
+			//return { ...state, authenticated: false }
 	}
 
 	return state

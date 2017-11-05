@@ -81,7 +81,7 @@ function validate (formProps) {
   }
 
   if (formProps.password !== formProps.password_confirmation) {
-    errors.password = 'Passwords must match!'
+    errors.password_confirmation = 'Passwords must match!'
   }
 
   return errors
